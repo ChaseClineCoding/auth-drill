@@ -4,15 +4,24 @@ var db = require('../db/api')
 var bcrypt = require('bcrypt')
 
 router.post('/signin', function(req, res, next){
-  db.signIn()
+  db.signIn(req.body.agentName)
   .then(function(agent){
     //Use bcrypt to log in
-      if (isMatch) {
-        //Route to /Assignment
-      }
-      else {
-        res.render('index', { title: 'gClassified', message: 'Incorrect login. Contents will self destruct' })
-      }
+    if (agent) {
+      bcrypt.compare(req.body.password, agent.password, function(err, isMatch) {
+        if (isMatch) {
+          req.session.agent = agent.agentName
+          console.log(req.session.agent);
+          res.redirect('/')
+        }
+        else {
+          res.render('index', { title: 'gClassified', message: 'Incorrect login. Contents will self destruct' })
+        }
+      })
+    }
+    else {
+      res.render('index', { title: 'gClassified', message: 'Incorrect login. Contents will self destruct' })
+    }
   })
 })
 

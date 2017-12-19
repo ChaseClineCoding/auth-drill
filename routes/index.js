@@ -4,7 +4,12 @@ var router = express.Router()
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'gClassified' })
+  if (req.session.agent) {
+    res.render('restricted', { title: 'Restricted', agent: req.session.agent })
+  }
+  else {
+    res.render('index', { title: 'gClassified' })
+  }
 })
 
 
